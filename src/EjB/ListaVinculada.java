@@ -6,8 +6,8 @@ import EjA.Usuario;
 
 public class ListaVinculada extends Lista{
 
-	Usuario raiz;
-	int contador;
+	protected Usuario raiz;
+	protected int contador;
 
 	public ListaVinculada(){
 		contador=0;
@@ -21,22 +21,6 @@ public class ListaVinculada extends Lista{
 			Usuario aux =new Usuario(d);
 			aux.setNext(raiz);
 			raiz=aux;
-		}
-		contador++;
-	}
-
-	public void addFinal(String [] d){
-
-		if(contador == 0){
-			raiz = new Usuario(d);
-		}else{
-			Usuario aux = raiz;
-			while (aux.getNext()!= null){
-				aux = aux.getNext();
-			}
-
-			aux.setNext(new Usuario(d));
-
 		}
 		contador++;
 	}

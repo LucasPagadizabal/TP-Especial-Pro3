@@ -24,8 +24,7 @@ public class ListaArreglo extends Lista{
 			usuarios = aux;
 		}
 
-		usuarios[contador] = new Usuario(d);
-		//this.insertarOrdenado(new Usuario(d)); //2da etapa del tp
+		this.insertarOrdenado(new Usuario(d)); //2da etapa del tp
 		contador++;
 	}
 

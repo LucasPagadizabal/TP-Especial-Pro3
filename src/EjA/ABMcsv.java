@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ABMcsv {
 
-	public void cargar(Lista l,String archivo){
+	public void cargarInicial(Lista l,String archivo){
 		String csvFile = "C:/DataSetTPE-Pro/"+archivo+".csv";
 		String line = "";
 		String cvsSplitBy = ";";
@@ -34,8 +34,7 @@ public class ABMcsv {
 			e.printStackTrace();
 		}
 	}
-
-
+	
 	public void insert (Lista l){
 
 		String csvFile = "C:/DataSetTPE-Pro/dataset_insert_10000.csv";
@@ -61,8 +60,8 @@ public class ABMcsv {
 				time_start = System.nanoTime();
 				String[] items = line.split(cvsSplitBy);
 
-				l.addUser(items);
-
+				l.insertarOrdenado(items);
+				
 				time_end = System.nanoTime();
 				// Escribo la primer linea del archivo
 				String contenidoLinea1 = items[0]+";"+(( time_end - time_start ));

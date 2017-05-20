@@ -12,11 +12,14 @@ public class Main1 {
 
 		ABMcsv abm = new ABMcsv();
 
-		abm.cargar(lista, "dataset_500000");
+		abm.cargarInicial(lista, "dataset_500000");
+		lista.ordenar();
 		
 		abm.insert(lista);
+	
 			
 		abm.busqueda(lista);
+		
 	
 	}
 

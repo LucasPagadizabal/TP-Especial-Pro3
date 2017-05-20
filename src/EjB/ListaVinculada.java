@@ -68,4 +68,10 @@ public class ListaVinculada extends Lista{
 		}
 		return false;
 	}
+
+	@Override
+	public void insertarOrdenado(String[] d) {
+		// TODO Auto-generated method stub
+		
+	}
 }

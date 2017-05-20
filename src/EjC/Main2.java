@@ -15,7 +15,7 @@ public class Main2 {
 		long time_start, time_end;
 
 		time_start = System.nanoTime();
-		abm.cargar(lista, "dataset_1000000");
+		abm.cargarInicial(lista, "dataset_1000000");
 		time_end = System.nanoTime();
 		System.out.println("Tiempo de carga 1millon: "+(time_end - time_start));
 

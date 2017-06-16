@@ -24,10 +24,12 @@ public class Grafo {
 		if(contador > vertices.length){
 			this.agrandarEstructura();
 		}
-		vertices[contador] = new Lista();
+		if(!existe(dato)){
+			vertices[contador] = new Lista();
 
-		estAux.put(dato, contador);
-		contador++;
+			estAux.put(dato, contador);
+			contador++;
+		}
 
 	}
 
@@ -37,16 +39,15 @@ public class Grafo {
 			this.agrandarEstructura();
 		}
 
-		if(!existeGusto(dato)){
+		if(!existe(dato)){
 			vertices[contador] = new Lista();
-
 			estAux.put(dato, contador);
 			contador++;
 		}
 
 	}
 
-	public boolean existeGusto(String dato){
+	public boolean existe(String dato){
 		return estAux.containsKey(dato);
 	}
 
@@ -61,39 +62,61 @@ public class Grafo {
 
 	public ArrayList<String> gustosEnComun(String u){
 		ArrayList<String> resultado = new ArrayList<String>();
-		Integer vert = estAux.get(u);
-		ArrayList<String> gustos = new ArrayList<String>();
 
-		for (int i = 0; i < vertices[vert].size(); i++) {
-			gustos.add(vertices[vert].at(i));
-		}
+		if(this.existe(u)){
 
-		for (int i = 0; i < contador; i++) {
+			Integer vert = estAux.get(u);
+			ArrayList<String> gustos = new ArrayList<String>();
 
-			if(vertices[i].getTipo() == TipoDato.gusto && i !=vert){
-				int gustComp = 0;
-				for (int j = 0; j < vertices[i].size(); j++) {
-					if(gustos.contains(vertices[i].at(j))){
-						gustComp++;
+			for (int i = 0; i < vertices[vert].size(); i++) {
+				gustos.add(vertices[vert].at(i));
+			}
+
+			for (int i = 0; i < contador; i++) {
+
+				if(vertices[i].getTipo() == TipoDato.gusto && i !=vert){
+					int gustComp = 0;
+					for (int j = 0; j < vertices[i].size(); j++) {
+						if(gustos.contains(vertices[i].at(j))){
+							gustComp++;
+						}
+					}
+					if(gustComp > 1){
+						resultado.add(this.getValor(i));
 					}
 				}
-				if(gustComp > 1){
-					resultado.add(this.getValor(i));
-				}
+
 			}
 
 		}
 		return resultado;
 	}
 
-	public void addGustoUser(String g, String u){
-		Integer vertUser = estAux.get(u);
-		vertices[vertUser].add(g, TipoDato.gusto);
-		Integer vertGusto = estAux.get(g);
-		vertices[vertGusto].add(u, TipoDato.idUser);
+	public void add(String[] items){
+
+		if(contador >= vertices.length){
+			this.agrandarEstructura();
+		}
+
+		this.agregarUsuario(items[0]);
+
+		for (int i = 1; i < items.length; i++) {
+			if(items[i]!=null){
+				this.agregarGusto(items[i]);
+				this.addArco(items[0], items[i]);
+			}			
+		}
+
 	}
 
-	public String getValor(int value){
+	private void addArco(String user,String gusto){
+		Integer vertUser = estAux.get(user);
+		vertices[vertUser].add(gusto, TipoDato.gusto);
+		Integer vertGusto = estAux.get(gusto);
+		vertices[vertGusto].add(user, TipoDato.idUser);
+	}
+
+	private String getValor(int value){
 		Set set = estAux.keySet();
 
 		Iterator it = set.iterator();
@@ -119,36 +142,39 @@ public class Grafo {
 					gustoPop = i;
 				}
 			}
-			
+
 		}
 		return this.getValor(gustoPop);
 	}
-	
+
 	public String gustoMasLejano(String user){
-		
-		ArrayList<ArrayList<String>> res = new ArrayList<ArrayList<String>>();
-		
-		for (int i = 0; i < contador; i++) {
-			if(this.getValor(i) != user){
-				res.add(this.getCaminoCorto(user, this.getValor(i)));
-			
-			}	
-		}
-		
-		
-		int mejor = 0;
-		for (int i = 1; i < res.size(); i++) {
-			if(res.get(i).size()> res.get(mejor).size()){
-				if(vertices[estAux.get(res.get(i).get(0))].getTipo() == TipoDato.gusto){
-					mejor =i;
+		if(this.existe(user)){
+			ArrayList<ArrayList<String>> res = new ArrayList<ArrayList<String>>();
+
+			for (int i = 0; i < contador; i++) {
+				if(this.getValor(i) != user){
+					res.add(this.getCaminoCorto(user, this.getValor(i)));
+
+				}	
+			}
+
+
+			int mejor = 0;
+			for (int i = 1; i < res.size(); i++) {
+				if(res.get(i).size()> res.get(mejor).size()){
+					if(vertices[estAux.get(res.get(i).get(0))].getTipo() == TipoDato.gusto){
+						mejor =i;
+					}
 				}
 			}
+
+			//System.out.println(res.get(mejor));
+			return res.get(mejor).get(0);
 		}
-		
-		//System.out.println(res.get(mejor));
-		return res.get(mejor).get(0);
+
+		return null;
 	}
-	
+
 	private ArrayList getCaminoCorto(String v1,String v2){
 
 		int[] padres = new int[contador];
@@ -168,16 +194,16 @@ public class Grafo {
 		ArrayList res = new ArrayList();
 
 		while(!fila.isEmpty() && !encontrado){
-			
+
 			//System.out.println(fila.print());
-			
+
 			for (int i = 0; i < vertices[estAux.get(fila.peek())].size(); i++) {
 				visto[estAux.get(fila.peek())] = true;
-				
+
 				if(padres[estAux.get(vertices[estAux.get(fila.peek())].at(i))] == -1 && visto[estAux.get(vertices[estAux.get(fila.peek())].at(i))] == false){
 					padres[estAux.get(vertices[estAux.get(fila.peek())].at(i))] = estAux.get(fila.peek());//seteo padre
 				}
-				
+
 
 				if(vertices[estAux.get(fila.peek())].at(i) == v2){
 					encontrado = true;
@@ -202,9 +228,9 @@ public class Grafo {
 
 		return res;
 	}
-	
+
 	public int getCantVertices(){
 		return contador;
 	}
-	
+
 }
